@@ -1,28 +1,50 @@
-$(document).ready(() => {
-    const renderHTML = (html) => {
-        $('div#root').append(html)
+class getImageGiffy {
+    constructor() {
+        this.html = null
+        this.defaultImages = 'Hacker'
+        this.dataImage = []
+        this.render()
     }
-    const renderImage = (img) => {
-        if (!img) return
-        let html = `<img src="${img}">`
+    async render() {
+        const items = await this.fetchImg()
+        document.getElementById('root').innerHTML = await this.renderHTML(items)
+        window.onkeypress = (event) => { if (event.keyCode == 13) { this.update() } }
+        document.getElementById('basic-addon2').onclick = () => { this.update() }
+    }
+    renderHTML(chill = "") {
+        let html = `<div class="container">
+        <div class="input-group mb-3 mt-3">
+            <input type="text" id="input" class="form-control" placeholder="${this.defaultImages}" aria-label="gif" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+                <span class="input-group-text" id="basic-addon2">Search</span>
+            </div>
+        </div>
+        <div class="row" id="gif">
+            ${chill}
+        </div>`
         return html
     }
-    const getImageGiffy = () => {
+    update() {
+        if (!document.getElementById('input').value) return alert('vui long nhap o tim kiem')
+        this.defaultImages = document.getElementById('input').value
+        this.render()
+    }
+    async getImg(key_work) {
         const URL = `https://api.giphy.com/v1/gifs/search`
         const APIKEY = `1GFc6mHvdUoiL4RDwBtED405PsbCKntX`
-        const FETCHIMG = `${URL}?api_key=${APIKEY}&q=dog`
-        $.ajax({
-            url: FETCHIMG,
-            dataType: 'json',
-            success: (res) => {
-                if (!res) return console.log(res)
-                res.data.map((item) => {
-                    renderHTML(renderImage(item.url))
-
-                })
-            }
-        })
+        const LIMIT = 100
+        const FETCHIMG = `${URL}?api_key=${APIKEY}&q=${key_work}&limit=${LIMIT}`
+        const result = await fetch(FETCHIMG).then(res => res.json())
+        return result.data
     }
-    getImageGiffy()
-
-})
+    async fetchImg() {
+        // let html
+        this.dataImage = await this.getImg(this.defaultImages)
+        const html = this.dataImage.map(item =>
+            `
+            <div class="col"><img src="${item.images.downsized.url}"/> </div>`
+        ).join('')
+        return html
+    }
+}
+const gify = new getImageGiffy()
