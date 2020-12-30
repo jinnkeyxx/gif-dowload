@@ -19,7 +19,7 @@ class getImageGiffy {
                 <span class="input-group-text" id="basic-addon2">Search</span>
             </div>
         </div>
-        <div class="row" id="gif">
+        <div class="row text-center" id="gif">
             ${chill}
         </div>`
         return html
@@ -38,11 +38,11 @@ class getImageGiffy {
         return result.data
     }
     async fetchImg() {
-        // let html
+        let html
         this.dataImage = await this.getImg(this.defaultImages)
-        const html = this.dataImage.map(item =>
-            `
-            <div class="col"><img src="${item.images.downsized.url}"/> </div>`
+        if (this.dataImage.length <= 0) return html = `<h1 class="text-center">no data</h1>`
+        html = this.dataImage.map(item =>
+            `<div class="col"><img src="${item.images.downsized.url}"/> </div>`
         ).join('')
         return html
     }
