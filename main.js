@@ -10,6 +10,12 @@ class getImageGiffy {
         document.getElementById('root').innerHTML = await this.renderHTML(items)
         window.onkeypress = (event) => { if (event.keyCode == 13) { this.update() } }
         document.getElementById('basic-addon2').onclick = () => { this.update() }
+        let img = document.getElementsByTagName('img')
+        for (let i = 0; i < img.length; i++) {
+            img[i].onclick = () => {
+                this.openFullscreen(img[i])
+            }
+        }
     }
     renderHTML(chill = "") {
         let html = `<div class="container">
@@ -45,6 +51,15 @@ class getImageGiffy {
             `<div class="col"><img src="${item.images.downsized.url}"/> </div>`
         ).join('')
         return html
+    }
+    openFullscreen(elem) {
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) { /* Safari */
+            elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { /* IE11 */
+            elem.msRequestFullscreen();
+        }
     }
 }
 const gify = new getImageGiffy()
